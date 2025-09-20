@@ -1,6 +1,5 @@
 # colorfulworld
 colorfulworldsinchon.
-[신촌의_색_웹사이트_템플릿_color_atlas.html](https://github.com/user-attachments/files/22448445/_._._._color_atlas.html)
 <!doctype html>
 <html lang="ko">
 <head>
