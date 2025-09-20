@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>신촌의 색 Color Atlas</title>
-  <meta name="description" content="신촌의 색을 수집하고 기록하는 사진·글 아카이브 / 지도와 게시판 포함" />
+  <title>신촌의 색 Colorfulworldsinchon.</title>
+  <meta name="description" content="신촌의 색을 수집하고 기록하는 컬러풀월드 신촌점" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -30,12 +30,11 @@
         <div class="h-9 w-9 rounded-xl bg-sky-500"></div>
         <div>
           <h1 class="text-lg font-semibold tracking-tight">신촌의 색 <span class="text-slate-400 text-base">Color Atlas</span></h1>
-          <p class="text-xs text-slate-500">사진·지도·이야기로 수집하는 신촌의 색채 아카이브</p>
+          <p class="text-xs text-slate-500">신촌의 다양한 색을 기록합니다!</p>
         </div>
       </div>
       <nav class="hidden md:flex items-center gap-2 text-sm">
-        <button id="tab-gallery" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 tab-active">갤러리</button>
-        <button id="tab-map" class="px-3 py-1.5 rounded-lg hover:bg-slate-100">지도</button>
+        <button id="tab-gallery" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 tab-active">사진</button>
         <button id="tab-board" class="px-3 py-1.5 rounded-lg hover:bg-slate-100">이야기</button>
         <div class="w-px h-5 bg-slate-200 mx-1"></div>
         <button id="btn-add" class="px-3 py-1.5 rounded-lg bg-sky-500 text-white hover:bg-sky-600 transition">새 기록</button>
@@ -51,7 +50,7 @@
   <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10 mb-6">
     <div class="grid md:grid-cols-3 gap-6 items-stretch">
       <div class="md:col-span-2 p-6 rounded-2xl card-shadow bg-white">
-        <h2 class="text-2xl font-semibold mb-2">오늘의 신촌 색</h2>
+        <h2 class="text-2xl font-semibold mb-2">신촌의 색</h2>
         <p class="text-sm text-slate-600">사진을 올리면 대표색과 <b>다중 팔레트(클러스터링)</b>가 자동 추출됩니다. 기록에는 위치(지도 클릭)와 이야기 메모를 함께 남길 수 있습니다.</p>
         <div class="mt-4 flex items-center gap-3 text-xs text-slate-500">
           <span class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>자연</span>
@@ -66,13 +65,13 @@
           <input id="q" type="search" placeholder="키워드 검색" class="col-span-2 px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400" />
           <select id="tag" class="px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
             <option value="">전체 태그</option>
-            <option>자연</option>
-            <option>상업</option>
-            <option>야간</option>
-            <option>감정</option>
+            <option>기쁨</option>
+            <option>슬픔</option>
+            <option>묘함</option>
+            <option>설렘</option>
           </select>
           <select id="time" class="px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
-            <option value="">시간대</option>
+            <option value="">시간</option>
             <option>새벽</option>
             <option>아침</option>
             <option>낮</option>
@@ -132,12 +131,12 @@
       <div class="p-6 grid md:grid-cols-2 gap-6">
         <div>
           <label class="block text-sm font-medium mb-2">이미지</label>
-          <div id="drop" class="aspect-[4/3] rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 text-sm">이미지 끌어놓기 또는 클릭 업로드
+          <div id="drop" class="aspect-[4/3] rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 text-sm">이미지 끌어놓기 또는 클릭
             <input id="file" type="file" accept="image/*" class="sr-only" />
           </div>
           <canvas id="preview" class="mt-3 w-full rounded-xl hidden"></canvas>
           <div id="swatch" class="mt-3 hidden">
-            <div class="text-sm text-slate-600 mb-1">자동 추출 대표색 & 팔레트</div>
+            <div class="text-sm text-slate-600 mb-1">팔레트</div>
             <div class="flex items-center gap-2" id="palette"></div>
             <div class="mt-2 text-xs text-slate-500" id="hex">#—</div>
           </div>
