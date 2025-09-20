@@ -54,7 +54,7 @@ kbd{background:#0a1428; border:1px solid var(--line); border-radius:6px; padding
 <header>
   <div class="container">
     <h1>신촌의 색 — Color Commons</h1>
-    <p class="subtitle">사진과 기록으로 모은 신촌의 색. 누구나 올리고, 모두 함께 보는 색의 아틀라스.</p>
+    <p class="subtitle">사진과 기록으로 모은 신촌의 색. 누구나 올리고, 모두 함께 보는 신촌의 색색 아카이브.</p>
     <div class="tabs">
       <div class="tab active" data-tab="upload">새 기록</div>
       <div class="tab" data-tab="board">게시판</div>
