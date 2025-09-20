@@ -1,501 +1,412 @@
-# colorfulworld
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>신촌의 색 Colorfulworldsinchon.</title>
-  <meta name="description" content="신촌의 색을 수집하고 기록하는 컬러풀월드 신촌점" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Leaflet for map -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <style>
-    html, body { font-family: Pretendard, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans"; }
-    .card-shadow { box-shadow: 0 10px 25px rgba(0,0,0,.08); }
-    .ring-accent { box-shadow: 0 0 0 3px rgba(14,165,233,0.35); }
-    .sr-only { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); border:0; }
-    .tab-active { background:#0ea5e9; color:#fff; }
-    .palette-dot { width:14px; height:14px; border-radius:999px; border:1px solid rgba(255,255,255,.8); box-shadow:0 0 0 1px rgba(0,0,0,.08) inset; }
-    #map { height: 520px; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>신촌의 색 — Colorfulworld sinchon.</title>
+<style>
+:root{
+  --bg:#0b1020; --panel:#0e1428; --line:#1e293b; --muted:#90a4b8;
+  --text:#e6edf3; --accent:#7dd3fc; --accent-2:#a78bfa;
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Pretendard, 'Noto Sans KR', sans-serif;
+  background: radial-gradient(1200px 800px at 20% -20%, #0c1730 10%, #0b1020 60%, #090f1c 100%);
+  color:var(--text);}
+a{color:var(--accent)}
+header{position:sticky; top:0; z-index:10; backdrop-filter: blur(10px);
+  background: rgba(9, 15, 28, 0.65); border-bottom:1px solid var(--line);}
+.container{max-width:1200px; margin:0 auto; padding:18px 20px;}
+h1{margin:0; font-size:26px; letter-spacing:0.2px}
+.subtitle{margin:6px 0 0; color:var(--muted); font-size:14px}
+.tabs{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap}
+.tab{padding:8px 12px; border:1px solid var(--line); border-radius:10px;
+  background:linear-gradient(180deg,#0a1428,#0a1326); color:var(--muted); cursor:pointer; user-select:none}
+.tab.active{background:var(--accent); color:#041422; border-color:#a5f3fc; font-weight:600}
+main{max-width:1200px; margin:0 auto; padding:18px 20px; display:grid; gap:14px}
+.panel{border:1px solid var(--line); background:linear-gradient(180deg,#0b1222,#0b1326); border-radius:16px; padding:16px}
+.grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:16px}
+input,textarea,button,select{width:100%; padding:10px 12px; border-radius:10px;
+  border:1px solid var(--line); background:#0a1426; color:var(--text); outline:none}
+button{cursor:pointer}
+button.primary{background:var(--accent); color:#072436; font-weight:700; border-color:#a5f3fc}
+label{font-size:13px; color:var(--muted)}
+.small{font-size:12px; color:var(--muted)}
+hr{border:none; border-top:1px solid var(--line); margin:14px 0}
+#preview{width:100%; border-radius:12px; border:1px solid var(--line); object-fit:cover; max-height:360px}
+#palette{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+.sw{width:36px; height:36px; border-radius:8px; border:1px solid rgba(255,255,255,.08); position:relative}
+.sw span{position:absolute; bottom:-17px; left:0; right:0; margin:auto; text-align:center; font-size:10px; color:var(--muted)}
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px}
+.card{border:1px solid var(--line); border-radius:14px; padding:12px; background:linear-gradient(180deg,#0a1221,#091226)}
+.card img{width:100%; height:180px; object-fit:cover; border-radius:10px; border:1px solid var(--line)}
+.row{display:flex; gap:8px; align-items:center}
+.tag{display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); font-size:11px}
+#vizCanvas{width:100%; height:560px; background:#0a1020; border-radius:14px; border:1px solid var(--line)}
+.legend{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+.legend .item{display:flex; align-items:center; gap:6px; border:1px solid var(--line); padding:6px 8px; border-radius:10px; font-size:12px}
+.legend .dot{width:14px; height:14px; border-radius:4px; border:1px solid rgba(255,255,255,.15)}
+footer{padding:18px; text-align:center; color:var(--muted)}
+.notice{color:#86efac; font-size:12px}
+kbd{background:#0a1428; border:1px solid var(--line); border-radius:6px; padding:2px 6px; font-size:12px}
+</style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-800">
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200/60">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-xl bg-sky-500"></div>
-        <div>
-          <h1 class="text-lg font-semibold tracking-tight">신촌의 색 <span class="text-slate-400 text-base">Color Atlas</span></h1>
-          <p class="text-xs text-slate-500">신촌의 다양한 색을 기록합니다!</p>
-        </div>
-      </div>
-      <nav class="hidden md:flex items-center gap-2 text-sm">
-        <button id="tab-gallery" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 tab-active">사진</button>
-        <button id="tab-board" class="px-3 py-1.5 rounded-lg hover:bg-slate-100">이야기</button>
-        <div class="w-px h-5 bg-slate-200 mx-1"></div>
-        <button id="btn-add" class="px-3 py-1.5 rounded-lg bg-sky-500 text-white hover:bg-sky-600 transition">새 기록</button>
-        <button id="btn-export" class="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-100">내보내기</button>
-        <label class="px-3 py-1.5 rounded-lg border border-slate-300 cursor-pointer hover:bg-slate-100">가져오기
-          <input id="import-json" type="file" accept="application/json" class="sr-only" />
-        </label>
-      </nav>
+<body>
+<header>
+  <div class="container">
+    <h1>신촌의 색 — Color Commons</h1>
+    <p class="subtitle">사진과 기록으로 모은 신촌의 색. 누구나 올리고, 모두 함께 보는 색의 아틀라스.</p>
+    <div class="tabs">
+      <div class="tab active" data-tab="upload">새 기록</div>
+      <div class="tab" data-tab="board">게시판</div>
+      <div class="tab" data-tab="atlas">색 아틀라스</div>
+      <div class="tab" data-tab="data">백업/가져오기</div>
+      <div class="tab" data-tab="help">도움말</div>
     </div>
-  </header>
+  </div>
+</header>
 
-  <!-- Controls -->
-  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10 mb-6">
-    <div class="grid md:grid-cols-3 gap-6 items-stretch">
-      <div class="md:col-span-2 p-6 rounded-2xl card-shadow bg-white">
-        <h2 class="text-2xl font-semibold mb-2">신촌의 색</h2>
-        <p class="text-sm text-slate-600">사진을 올리면 대표색과 <b>다중 팔레트(클러스터링)</b>가 자동 추출됩니다. 기록에는 위치(지도 클릭)와 이야기 메모를 함께 남길 수 있습니다.</p>
-        <div class="mt-4 flex items-center gap-3 text-xs text-slate-500">
-          <span class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>자연</span>
-          <span class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-amber-500"></span>상업</span>
-          <span class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-indigo-500"></span>야간</span>
-          <span class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-rose-500"></span>감정</span>
+<main>
+  <!-- Upload -->
+  <section id="upload" class="panel">
+    <div class="grid">
+      <div>
+        <label>사진 업로드</label>
+        <input id="file" type="file" accept="image/*">
+        <img id="preview" src="" alt="" style="margin-top:10px; display:none">
+        <canvas id="canvas" style="display:none"></canvas>
+        <div class="row" style="margin-top:10px; align-items:flex-end">
+          <div style="width:120px">
+            <label>팔레트 개수 (k)</label>
+            <input id="k" type="number" min="3" max="8" value="5">
+          </div>
+          <button id="extract">색 추출</button>
+          <span class="small">이미지에서 대표색을 찾습니다(k-means).</span>
         </div>
+        <div id="palette"></div>
       </div>
-      <div class="p-6 rounded-2xl bg-sky-50 border border-sky-100">
-        <h3 class="font-semibold mb-2">검색/필터</h3>
-        <div class="grid grid-cols-2 gap-3 text-sm">
-          <input id="q" type="search" placeholder="키워드 검색" class="col-span-2 px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400" />
-          <select id="tag" class="px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
-            <option value="">전체 태그</option>
-            <option>기쁨</option>
-            <option>슬픔</option>
-            <option>묘함</option>
-            <option>설렘</option>
-          </select>
-          <select id="time" class="px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
-            <option value="">시간</option>
-            <option>새벽</option>
-            <option>아침</option>
-            <option>낮</option>
-            <option>저녁</option>
-            <option>밤</option>
-          </select>
+      <div>
+        <label>신촌의 색 이름 (예: 연세로 보랏빛 저녁)</label>
+        <input id="title" placeholder="색 이름을 적어주세요">
+        <label style="margin-top:8px">짧은 기록</label>
+        <textarea id="note" rows="5" placeholder="그때의 공기, 말투, 소리… 무엇이 보였나요?"></textarea>
+        <div class="row" style="margin-top:8px">
+          <div style="flex:1">
+            <label>날짜</label>
+            <input id="date" type="date">
+          </div>
+          <div style="width:160px">
+            <label>태그</label>
+            <input id="tags" placeholder="예: 저녁,비,골목">
+          </div>
+        </div>
+        <hr>
+        <div class="row" style="justify-content:space-between">
+          <span class="small">저장은 이 브라우저에 보관됩니다(<kbd>localStorage</kbd>).</span>
+          <button class="primary" id="save">기록 저장</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Tabs Content -->
-  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24">
-    <!-- Gallery -->
-    <section id="view-gallery">
-      <div id="gallery" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      <div id="empty" class="hidden text-center text-slate-500 mt-14">아직 기록이 없습니다. 오른쪽 상단의 <b>새 기록</b>을 눌러 시작해 보세요.</div>
-    </section>
-
-    <!-- Map -->
-    <section id="view-map" class="hidden">
-      <div class="rounded-2xl overflow-hidden border border-slate-200 card-shadow">
-        <div id="map"></div>
+  <!-- Board -->
+  <section id="board" class="panel" style="display:none">
+    <div class="row" style="justify-content:space-between; margin-bottom:10px">
+      <div class="small">총 <span id="count">0</span>건</div>
+      <div class="row">
+        <input id="search" placeholder="제목/기록/태그 검색" style="width:220px">
+        <select id="sort">
+          <option value="new">최신순</option>
+          <option value="old">오래된순</option>
+          <option value="title">제목순</option>
+        </select>
       </div>
-      <p class="text-xs text-slate-500 mt-2">지도의 타일/데이터는 외부 제공(오픈스트리트맵)으로, 네트워크 연결이 필요합니다.</p>
-    </section>
-
-    <!-- Board -->
-    <section id="view-board" class="hidden">
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="p-6 rounded-2xl bg-white border border-slate-200 card-shadow">
-          <h3 class="text-lg font-semibold mb-3">신촌 사람들 이야기 쓰기</h3>
-          <div class="grid gap-3 text-sm">
-            <input id="bName" class="px-3 py-2 rounded-lg border border-slate-300" placeholder="이름(또는 필명)" />
-            <input id="bTitle" class="px-3 py-2 rounded-lg border border-slate-300" placeholder="제목" />
-            <textarea id="bBody" rows="6" class="px-3 py-2 rounded-lg border border-slate-300" placeholder="이야기, 장소, 시간, 색의 기억 등"></textarea>
-            <button id="bPost" class="px-4 py-2 rounded-lg bg-sky-500 text-white hover:bg-sky-600">등록</button>
-            <p class="text-xs text-slate-500">개인정보는 수집하지 않으며, 게시글은 이 브라우저에만 저장됩니다.</p>
-          </div>
-        </div>
-        <div>
-          <h3 class="text-lg font-semibold mb-3">이야기 목록</h3>
-          <div id="boardList" class="grid gap-4"></div>
-          <div id="boardEmpty" class="text-slate-500 text-sm">아직 등록된 이야기가 없습니다.</div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Add Modal -->
-  <dialog id="modal" class="w-full max-w-4xl rounded-2xl p-0 overflow-hidden shadow-2xl">
-    <form id="form" method="dialog" class="bg-white">
-      <div class="p-6 border-b border-slate-200 flex items-center justify-between">
-        <h3 class="text-lg font-semibold">새 기록 추가</h3>
-        <button type="button" id="close" class="p-2 rounded-lg hover:bg-slate-100">✕</button>
-      </div>
-      <div class="p-6 grid md:grid-cols-2 gap-6">
-        <div>
-          <label class="block text-sm font-medium mb-2">이미지</label>
-          <div id="drop" class="aspect-[4/3] rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 text-sm">이미지 끌어놓기 또는 클릭
-            <input id="file" type="file" accept="image/*" class="sr-only" />
-          </div>
-          <canvas id="preview" class="mt-3 w-full rounded-xl hidden"></canvas>
-          <div id="swatch" class="mt-3 hidden">
-            <div class="text-sm text-slate-600 mb-1">팔레트</div>
-            <div class="flex items-center gap-2" id="palette"></div>
-            <div class="mt-2 text-xs text-slate-500" id="hex">#—</div>
-          </div>
-        </div>
-        <div class="grid gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">제목</label>
-            <input id="title" required class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="예) 연세로 비 온 뒤 아스팔트" />
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-medium mb-1">장소(텍스트)</label>
-              <input id="place" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="예) 연세로, 창천동" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1">시간대</label>
-              <select id="timeInput" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400">
-                <option>새벽</option><option>아침</option><option selected>낮</option><option>저녁</option><option>밤</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-3 gap-3 items-end">
-            <div>
-              <label class="block text-sm font-medium mb-1">위도</label>
-              <input id="lat" type="number" step="0.000001" class="w-full px-3 py-2 rounded-lg border border-slate-300" placeholder="37.559" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1">경도</label>
-              <input id="lng" type="number" step="0.000001" class="w-full px-3 py-2 rounded-lg border border-slate-300" placeholder="126.936" />
-            </div>
-            <button type="button" id="pickMap" class="px-3 py-2 rounded-lg border border-slate-300 hover:bg-slate-100">지도에서 지정</button>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium mb-1">태그</label>
-            <div class="flex flex-wrap gap-2">
-              <label class="inline-flex items-center gap-2 text-sm px-2 py-1.5 rounded-lg border border-slate-300 cursor-pointer"><input type="checkbox" class="tagChk" value="자연"/>자연</label>
-              <label class="inline-flex items-center gap-2 text-sm px-2 py-1.5 rounded-lg border border-slate-300 cursor-pointer"><input type="checkbox" class="tagChk" value="상업"/>상업</label>
-              <label class="inline-flex items-center gap-2 text-sm px-2 py-1.5 rounded-lg border border-slate-300 cursor-pointer"><input type="checkbox" class="tagChk" value="야간"/>야간</label>
-              <label class="inline-flex items-center gap-2 text-sm px-2 py-1.5 rounded-lg border border-slate-300 cursor-pointer"><input type="checkbox" class="tagChk" value="감정"/>감정</label>
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">메모</label>
-            <textarea id="note" rows="5" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="색의 느낌, 소리, 냄새, 그 순간의 이야기"></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="p-6 border-t border-slate-200 flex items-center justify-end gap-3">
-        <button type="button" id="resetBtn" class="px-4 py-2 rounded-lg border border-slate-300 hover:bg-slate-100">리셋</button>
-        <button id="save" class="px-4 py-2 rounded-lg bg-sky-500 text-white hover:bg-sky-600">저장</button>
-      </div>
-    </form>
-  </dialog>
-
-  <!-- Map Picker Modal -->
-  <dialog id="pickModal" class="w-full max-w-3xl rounded-2xl p-0 overflow-hidden shadow-2xl">
-    <div class="p-3 bg-white border-b border-slate-200 flex items-center justify-between">
-      <div class="text-sm">지도를 클릭하여 위치를 지정하세요 (신촌 일대)</div>
-      <button id="pickClose" class="p-2 rounded-lg hover:bg-slate-100">✕</button>
     </div>
-    <div id="pickMapView" style="height:420px"></div>
-    <div class="p-3 bg-white border-t border-slate-200 text-right text-sm text-slate-600">좌표: <span id="pickCoord">—</span></div>
-  </dialog>
+    <div id="cards" class="cards"></div>
+  </section>
 
-  <template id="cardTpl">
-    <article class="group overflow-hidden rounded-2xl bg-white card-shadow border border-slate-200/60">
-      <div class="relative aspect-[4/3] overflow-hidden">
-        <img class="w-full h-full object-cover" alt="" />
-        <div class="absolute top-3 left-3 rounded-lg px-2 py-1 text-xs text-white/90" data-badge></div>
-        <div class="absolute bottom-3 right-3 flex gap-1" data-chip></div>
+  <!-- Atlas -->
+  <section id="atlas" class="panel" style="display:none">
+    <h3>신촌 색 아틀라스(집계 시각화)</h3>
+    <p class="small">여러 사람이 저장한 이미지의 팔레트를 모아 색 분포를 보여줍니다. 색은 12-bit로 양자화(#RGB) 후 빈도 기반으로 배치합니다.</p>
+    <canvas id="vizCanvas"></canvas>
+    <div id="legend" class="legend"></div>
+  </section>
+
+  <!-- Data -->
+  <section id="data" class="panel" style="display:none">
+    <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div>
+        <h3>내보내기</h3>
+        <p class="small">현재 저장된 모든 기록을 JSON으로 다운로드합니다.</p>
+        <button id="export" class="primary">JSON 다운로드</button>
       </div>
-      <div class="p-4">
-        <h4 class="font-semibold truncate" data-title></h4>
-        <p class="text-xs text-slate-500 mt-1" data-meta></p>
-        <p class="text-sm text-slate-700 mt-2 line-clamp-3" data-note></p>
-        <div class="flex gap-2 flex-wrap mt-3" data-tags></div>
+      <div>
+        <h3>가져오기</h3>
+        <p class="small">다른 브라우저/기기의 백업 JSON을 불러옵니다(중복은 무시).</p>
+        <input id="import" type="file" accept="application/json">
       </div>
-    </article>
-  </template>
+    </div>
+  </section>
 
-  <template id="boardTpl">
-    <article class="p-4 rounded-xl bg-white border border-slate-200 card-shadow">
-      <h4 class="font-semibold" data-btitle></h4>
-      <p class="text-xs text-slate-500 mt-0.5" data-bmeta></p>
-      <p class="text-sm text-slate-700 mt-2" data-bbody></p>
-    </article>
-  </template>
+  <!-- Help -->
+  <section id="help" class="panel" style="display:none">
+    <h3>도움말</h3>
+    <ul>
+      <li>“새 기록”에서 사진을 올리고 색을 추출한 뒤 제목과 기록을 적어 저장합니다.</li>
+      <li>“게시판”에서 저장한 사진과 팔레트를 카드로 확인하고, 검색/정렬할 수 있습니다.</li>
+      <li>“색 아틀라스”는 모든 카드의 팔레트를 모아 색 분포를 그리드로 시각화합니다.</li>
+      <li>데이터는 브라우저 <kbd>localStorage</kbd>에 보관되며, “백업/가져오기”로 JSON 이동이 가능합니다.</li>
+    </ul>
+    <p class="notice">오픈소스 라이브러리 없이 순수 JS로 구현된 샘플 웹앱입니다.</p>
+  </section>
+</main>
 
-  <script>
-    // --- State ---
-    const state = { items: [], board: [], filter: { q: '', tag: '', time: '' } };
+<footer>© 2025 신촌의 색 — Color Commons</footer>
 
-    // --- Elements ---
-    const gallery = document.getElementById('gallery');
-    const empty = document.getElementById('empty');
-    const modal = document.getElementById('modal');
-    const form = document.getElementById('form');
-    const fileInput = document.getElementById('file');
-    const drop = document.getElementById('drop');
-    const preview = document.getElementById('preview');
-    const swatch = document.getElementById('swatch');
-    const paletteWrap = document.getElementById('palette');
-    const hexEl = document.getElementById('hex');
+<script>
+// ---------- Tabs ----------
+const sections={upload:qs('#upload'),board:qs('#board'),atlas:qs('#atlas'),data:qs('#data'),help:qs('#help')};
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active');
+  Object.values(sections).forEach(s=>s.style.display='none'); sections[t.dataset.tab].style.display='block';
+  if(t.dataset.tab==='board') renderBoard();
+  if(t.dataset.tab==='atlas') drawAtlas();
+}));
 
-    const viewGallery = document.getElementById('view-gallery');
-    const viewMap = document.getElementById('view-map');
-    const viewBoard = document.getElementById('view-board');
+// ---------- Elements ----------
+const fileEl=qs('#file'), preview=qs('#preview'), canvas=qs('#canvas'), ctx=canvas.getContext('2d');
+const kEl=qs('#k'), paletteEl=qs('#palette');
+const titleEl=qs('#title'), noteEl=qs('#note'), dateEl=qs('#date'), tagsEl=qs('#tags');
 
-    // Controls
-    document.getElementById('tab-gallery').addEventListener('click', ()=> switchTab('gallery'));
-    document.getElementById('tab-map').addEventListener('click', ()=> switchTab('map'));
-    document.getElementById('tab-board').addEventListener('click', ()=> switchTab('board'));
+// ---------- Image handling & palette ----------
+let currentImageData=null;
+fileEl.addEventListener('change',()=>{
+  const f=fileEl.files[0]; if(!f) return;
+  const url=URL.createObjectURL(f);
+  const img=new Image();
+  img.onload=()=>{
+    const maxW=720, scale=Math.min(1, maxW/img.width);
+    const w=Math.round(img.width*scale), h=Math.round(img.height*scale);
+    canvas.width=w; canvas.height=h; ctx.drawImage(img,0,0,w,h);
+    currentImageData=ctx.getImageData(0,0,w,h);
+    preview.src=url; preview.style.display='block';
+  };
+  img.src=url;
+});
 
-    document.getElementById('btn-add').addEventListener('click', () => openModal());
-    document.getElementById('close').addEventListener('click', () => modal.close());
-    document.getElementById('resetBtn').addEventListener('click', resetModal);
-    document.getElementById('save').addEventListener('click', onSave);
-    document.getElementById('btn-export').addEventListener('click', onExport);
-    document.getElementById('import-json').addEventListener('change', onImport);
+qs('#extract').addEventListener('click',()=>{
+  if(!currentImageData){ alert('이미지를 먼저 올려주세요.'); return; }
+  const k=Math.max(3, Math.min(8, parseInt(kEl.value||'5',10)));
+  const px=samplePixels(currentImageData,6);
+  const centers=kmeans(px,k,12);
+  const hexes=centers.map(c=>rgbToHex(c[0],c[1],c[2]));
+  paletteEl.innerHTML='';
+  hexes.forEach(h=>{ const el=document.createElement('div'); el.className='sw'; el.style.background=h; el.title=h; el.innerHTML=`<span>${h}</span>`; paletteEl.appendChild(el); });
+});
 
-    // Board
-    document.getElementById('bPost').addEventListener('click', postBoard);
+// ---------- Save ----------
+qs('#save').addEventListener('click',()=>{
+  if(!preview.src){ alert('사진을 올려주세요.'); return; }
+  const title=titleEl.value.trim(); if(!title){ alert('색 이름을 입력해주세요.'); return; }
+  const note=noteEl.value.trim(); const date=dateEl.value; const tags=(tagsEl.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const palette=currentPalette();
+  const image=dataURLFromCanvas();
+  const rec={ id:'rec_'+Date.now(), title, note, date, tags, palette, image };
+  const all=loadAll(); all.unshift(rec); saveAll(all);
+  alert('저장되었습니다.');
+  resetForm(); renderBoard();
+});
 
-    // Filters
-    document.getElementById('q').addEventListener('input', e => { state.filter.q = e.target.value.toLowerCase(); render(); });
-    document.getElementById('tag').addEventListener('change', e => { state.filter.tag = e.target.value; render(); });
-    document.getElementById('time').addEventListener('change', e => { state.filter.time = e.target.value; render(); });
+function resetForm(){
+  titleEl.value=''; noteEl.value=''; dateEl.value=''; tagsEl.value='';
+  fileEl.value=''; preview.src=''; preview.style.display='none'; paletteEl.innerHTML='';
+}
 
-    // Map picker
-    const pickModal = document.getElementById('pickModal');
-    const pickCoord = document.getElementById('pickCoord');
-    let pickMap, pickMarker;
-    document.getElementById('pickMap').addEventListener('click', () => {
-      pickModal.showModal();
-      setTimeout(()=>{
-        if(!pickMap){
-          pickMap = L.map('pickMapView').setView([37.559,126.936], 15);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(pickMap);
-          pickMap.on('click', (e)=>{
-            const { lat, lng } = e.latlng;
-            if(pickMarker) pickMap.removeLayer(pickMarker);
-            pickMarker = L.marker([lat,lng]).addTo(pickMap);
-            document.getElementById('lat').value = lat.toFixed(6);
-            document.getElementById('lng').value = lng.toFixed(6);
-            pickCoord.textContent = lat.toFixed(6)+', '+lng.toFixed(6);
-          });
-        } else { pickMap.invalidateSize(); }
-      },50);
-    });
-    document.getElementById('pickClose').addEventListener('click', ()=> pickModal.close());
+// ---------- Board ----------
+const searchEl=qs('#search'), sortEl=qs('#sort'), cardsEl=qs('#cards');
+searchEl.addEventListener('input', renderBoard);
+sortEl.addEventListener('change', renderBoard);
 
-    // Drag & Drop
-    drop.addEventListener('click', () => fileInput.click());
-    drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('ring-accent'); });
-    drop.addEventListener('dragleave', () => drop.classList.remove('ring-accent'));
-    drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('ring-accent'); handleFile(e.dataTransfer.files[0]); });
-    fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+function renderBoard(){
+  let data=loadAll();
+  const q=(searchEl.value||'').toLowerCase();
+  if(q){
+    data = data.filter(d=>(d.title||'').toLowerCase().includes(q) || (d.note||'').toLowerCase().includes(q) || (d.tags||[]).some(t=>t.toLowerCase().includes(q)));
+  }
+  const sort=sortEl.value;
+  if(sort==='new') data.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  else if(sort==='old') data.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  else if(sort==='title') data.sort((a,b)=>(a.title||'').localeCompare(b.title||''));
 
-    function switchTab(name){
-      const tabs = ['gallery','map','board'];
-      tabs.forEach(t=>{
-        document.getElementById('view-'+t).classList.toggle('hidden', t!==name);
-        document.getElementById('tab-'+t).classList.toggle('tab-active', t===name);
-      });
-      if(name==='map'){ initMainMap(); }
+  qs('#count').textContent=data.length;
+  cardsEl.innerHTML='';
+  data.forEach(d=>{
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML=`
+      ${d.image?`<img src="${d.image}" alt="">`:''}
+      <div class="row" style="justify-content:space-between; margin-top:8px">
+        <b>${escapeHtml(d.title||'무제')}</b>
+        <span class="tag">${d.date||''}</span>
+      </div>
+      <div class="small" style="margin:6px 0">${escapeHtml(d.note||'')}</div>
+      <div class="row" style="gap:6px; flex-wrap:wrap; margin-top:6px">
+        ${(d.palette||[]).map(c=>`<span class="sw" title="${c}" style="width:18px;height:18px;background:${c}"></span>`).join('')}
+      </div>
+      <div class="row" style="margin-top:8px; gap:6px">
+        ${(d.tags||[]).map(t=>`<span class="tag">#${escapeHtml(t)}</span>`).join('')}
+        <span style="flex:1"></span>
+        <button onclick="delRec('${d.id}')">삭제</button>
+      </div>
+    `;
+    cardsEl.appendChild(card);
+  });
+}
+
+// ---------- Atlas Visualization ----------
+function drawAtlas(){
+  const canvas = qs('#vizCanvas');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr);
+  const g = canvas.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0);
+  g.clearRect(0,0,w,h);
+
+  const all = loadAll();
+  const bins = new Map(); // key: quantized hex (#rgb), value: {hex, count}
+  all.forEach(item => (item.palette||[]).forEach(hex => {
+    const q = quantize12(hex); // #rgb
+    const key = q.toLowerCase();
+    if(!bins.has(key)) bins.set(key,{hex:key,count:0});
+    bins.get(key).count++;
+  }));
+
+  const arr = Array.from(bins.values());
+  arr.sort((a,b)=>b.count-a.count);
+
+  // grid layout
+  const cols = Math.ceil(Math.sqrt(arr.length));
+  const rows = Math.ceil(arr.length/cols);
+  const pad = 8, cellW = Math.floor((w - pad*2) / cols), cellH = Math.floor((h - pad*2) / rows);
+  const cell = Math.max(10, Math.min(cellW, cellH));
+
+  arr.forEach((bin,i)=>{
+    const cx = pad + (i%cols)*cell;
+    const cy = pad + Math.floor(i/cols)*cell;
+    g.fillStyle = expand12(bin.hex);
+    g.fillRect(cx, cy, cell-2, cell-2);
+  });
+
+  // legend top 16
+  const legend = qs('#legend'); legend.innerHTML='';
+  arr.slice(0,16).forEach(b=>{
+    const el = document.createElement('div'); el.className='item';
+    const dot = document.createElement('div'); dot.className='dot'; dot.style.background = expand12(b.hex);
+    const label = document.createElement('div'); label.textContent = `${expand12(b.hex)} × ${b.count}`;
+    el.appendChild(dot); el.appendChild(label); legend.appendChild(el);
+  });
+}
+
+// ---------- Export/Import ----------
+qs('#export').addEventListener('click',()=>{
+  const data = loadAll();
+  const blob = new Blob([JSON.stringify({version:1, exportedAt:new Date().toISOString(), items:data}, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='shinchon-colors.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+qs('#import').addEventListener('change', async (e)=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{
+    const text = await f.text();
+    const parsed = JSON.parse(text);
+    const items = parsed.items || parsed;
+    if(!Array.isArray(items)) throw new Error('형식 오류');
+    const now = loadAll();
+    const ids = new Set(now.map(x=>x.id));
+    const merged = [...items.filter(x=>!ids.has(x.id)), ...now];
+    saveAll(merged);
+    alert(`가져오기가 완료되었습니다: ${items.length}건`);
+    renderBoard(); drawAtlas();
+  }catch(err){
+    alert('가져오기에 실패했습니다.');
+  }
+});
+
+// ---------- Storage ----------
+function loadAll(){ try{ return JSON.parse(localStorage.getItem('shinchon-colors')||'[]'); }catch(e){ return []; } }
+function saveAll(arr){ localStorage.setItem('shinchon-colors', JSON.stringify(arr)); }
+function delRec(id){ if(!confirm('삭제하시겠습니까?')) return; const next=loadAll().filter(x=>x.id!==id); saveAll(next); renderBoard(); drawAtlas(); }
+
+// ---------- Helpers ----------
+function qs(sel){ return document.querySelector(sel); }
+function escapeHtml(s){ return (s||'').replace(/[&<>\"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function samplePixels(imgData, step=6){
+  const {data,width,height}=imgData; const out=[];
+  for(let y=0;y<height;y+=step){
+    for(let x=0;x<width;x+=step){
+      const i=(y*width+x)*4; const a=data[i+3]; if(a<128) continue;
+      out.push([data[i],data[i+1],data[i+2]]);
     }
-
-    function openModal() { modal.showModal(); }
-
-    function resetModal() {
-      form.reset();
-      preview.classList.add('hidden');
-      swatch.classList.add('hidden');
-      hexEl.textContent = '#—';
-      paletteWrap.innerHTML = '';
-      delete preview.dataset.src; delete preview.dataset.hex; delete preview.dataset.palette;
-    }
-
-    function handleFile(file) {
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          const ctx = preview.getContext('2d');
-          const maxW = 900; const scale = Math.min(1, maxW / img.width);
-          preview.width = Math.floor(img.width * scale);
-          preview.height = Math.floor(img.height * scale);
-          ctx.drawImage(img, 0, 0, preview.width, preview.height);
-          preview.classList.remove('hidden');
-          // Compute palette via k-means (k=5)
-          const { avgHex, palette } = extractPalette(preview, 5, 8);
-          swatch.classList.remove('hidden');
-          paletteWrap.innerHTML = '';
-          palette.forEach(hex=>{
-            const d=document.createElement('div'); d.className='palette-dot'; d.style.background=hex; paletteWrap.appendChild(d);
-          });
-          hexEl.textContent = avgHex + '  ·  ' + palette.join(', ');
-          preview.dataset.src = e.target.result;
-          preview.dataset.hex = avgHex;
-          preview.dataset.palette = JSON.stringify(palette);
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function extractPalette(canvas, k=5, iterations=8){
-      const ctx = canvas.getContext('2d', { willReadFrequently: true });
-      const { width, height } = canvas;
-      const step = 8; const samples=[];
-      try {
-        const data = ctx.getImageData(0,0,width,height).data;
-        for(let y=0;y<height;y+=step){
-          for(let x=0;x<width;x+=step){
-            const i=(y*width+x)*4; const r=data[i], g=data[i+1], b=data[i+2], a=data[i+3];
-            if(a>200) samples.push([r,g,b]);
-          }
-        }
-      } catch(e){ /* ignore CORS */ }
-      if(samples.length===0) return { avgHex:'#999999', palette:['#999999'] };
-      // init centers randomly
-      const centers = Array.from({length:k}, ()=> samples[(Math.random()*samples.length)|0].slice());
-      for(let it=0; it<iterations; it++){
-        const buckets = Array.from({length:k}, ()=>({sum:[0,0,0], n:0}));
-        for(const p of samples){
-          let bi=0, bd=1e9; for(let i=0;i<k;i++){ const c=centers[i]; const d=(p[0]-c[0])**2+(p[1]-c[1])**2+(p[2]-c[2])**2; if(d<bd){bd=d;bi=i;} }
-          const b=buckets[bi]; b.sum[0]+=p[0]; b.sum[1]+=p[1]; b.sum[2]+=p[2]; b.n++;
-        }
-        for(let i=0;i<k;i++){ if(buckets[i].n>0) centers[i]=buckets[i].sum.map(x=>Math.round(x/buckets[i].n)); }
+  }
+  return out;
+}
+function kmeans(pixels, k=5, maxIter=12){
+  const centers=[]; for(let i=0;i<k;i++){ centers.push(pixels[Math.floor(Math.random()*pixels.length)].slice()); }
+  let labels=new Array(pixels.length).fill(0);
+  for(let it=0; it<maxIter; it++){
+    // assign
+    for(let i=0;i<pixels.length;i++){
+      let best=0, min=1e9;
+      for(let c=0;c<k;c++){
+        const d=dist(pixels[i], centers[c]);
+        if(d<min){min=d; best=c;}
       }
-      const hex = v=> '#'+v.map(x=>x.toString(16).padStart(2,'0')).join('');
-      const palette = centers.map(c=>hex(c));
-      const avg = samples.reduce((a,p)=>[a[0]+p[0],a[1]+p[1],a[2]+p[2]],[0,0,0]).map(x=>Math.round(x/samples.length));
-      const avgHex = hex(avg);
-      return { avgHex, palette };
+      labels[i]=best;
     }
-
-    function onSave(e){
-      e.preventDefault();
-      const title = document.getElementById('title').value.trim(); if (!title) return;
-      const place = document.getElementById('place').value.trim();
-      const time = document.getElementById('timeInput').value;
-      const note = document.getElementById('note').value.trim();
-      const tags = [...document.querySelectorAll('.tagChk:checked')].map(i=>i.value);
-      const src = preview.dataset.src || '';
-      const hex = preview.dataset.hex || '#999999';
-      const palette = preview.dataset.palette ? JSON.parse(preview.dataset.palette) : [];
-      const lat = parseFloat(document.getElementById('lat').value);
-      const lng = parseFloat(document.getElementById('lng').value);
-      addItem({ title, place, time, note, tags, src, hex, palette, lat: isNaN(lat)?null:lat, lng: isNaN(lng)?null:lng, date: new Date().toISOString() });
-      modal.close();
-      resetModal();
+    // update
+    const sum=Array.from({length:k},()=>[0,0,0,0]);
+    for(let i=0;i<pixels.length;i++){
+      const c=labels[i]; sum[c][0]+=pixels[i][0]; sum[c][1]+=pixels[i][1]; sum[c][2]+=pixels[i][2]; sum[c][3]++;
     }
-
-    function addItem(item){ state.items.unshift(item); persist(); render(); refreshMap(); }
-
-    function render(){
-      gallery.innerHTML = '';
-      const { q, tag, time } = state.filter;
-      const items = state.items.filter(it => {
-        const matchQ = !q || (it.title+it.place+it.note).toLowerCase().includes(q);
-        const matchTag = !tag || it.tags?.includes(tag);
-        const matchTime = !time || it.time===time;
-        return matchQ && matchTag && matchTime;
-      });
-      empty.classList.toggle('hidden', items.length>0);
-      for(const it of items){
-        const node = document.getElementById('cardTpl').content.firstElementChild.cloneNode(true);
-        const img = node.querySelector('img'); img.src = it.src; img.alt = it.title;
-        const badge = node.querySelector('[data-badge]');
-        badge.textContent = it.time || '';
-        badge.style.background = (it.hex||'#999') + 'cc';
-        const chipWrap = node.querySelector('[data-chip]');
-        (it.palette && it.palette.length? it.palette : [it.hex]).slice(0,5).forEach(h=>{ const d=document.createElement('div'); d.className='palette-dot'; d.style.background=h; chipWrap.appendChild(d); });
-        node.querySelector('[data-title]').textContent = it.title;
-        node.querySelector('[data-meta]').textContent = [it.place, new Date(it.date).toLocaleDateString('ko-KR')].filter(Boolean).join(' · ');
-        node.querySelector('[data-note]').textContent = it.note;
-        const tagsWrap = node.querySelector('[data-tags]');
-        (it.tags||[]).forEach(t=>{ const span = document.createElement('span'); span.className = 'text-xs px-2 py-1 rounded-md border border-slate-300'; span.textContent = t; tagsWrap.appendChild(span); });
-        gallery.appendChild(node);
-      }
+    for(let c=0;c<k;c++){
+      if(sum[c][3]===0) continue;
+      centers[c][0]=Math.round(sum[c][0]/sum[c][3]);
+      centers[c][1]=Math.round(sum[c][1]/sum[c][3]);
+      centers[c][2]=Math.round(sum[c][2]/sum[c][3]);
     }
+  }
+  return centers;
+}
+function dist(a,b){ return Math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2); }
+function rgbToHex(r,g,b){ return "#"+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join(''); }
+function currentPalette(){ return Array.from(document.querySelectorAll('#palette .sw')).map(el=>el.title); }
+function dataURLFromCanvas(){ try{ return canvas.toDataURL('image/jpeg',0.92);}catch(e){ return null; } }
 
-    // --- Board ---
-    function postBoard(){
-      const name = document.getElementById('bName').value.trim() || '익명';
-      const title = document.getElementById('bTitle').value.trim();
-      const body = document.getElementById('bBody').value.trim();
-      if(!title || !body) return;
-      state.board.unshift({ name, title, body, date: new Date().toISOString() });
-      document.getElementById('bName').value=''; document.getElementById('bTitle').value=''; document.getElementById('bBody').value='';
-      persist(); renderBoard();
-    }
+// quantize to 12-bit (#rgb)
+function quantize12(hex){
+  const {r,g,b} = parseHex(hex); // 0-255
+  const rq = (r>>4).toString(16);
+  const gq = (g>>4).toString(16);
+  const bq = (b>>4).toString(16);
+  return '#'+rq+gq+bq;
+}
+function expand12(rgb){ // #rgb -> #rrggbb
+  const r=rgb[1], g=rgb[2], b=rgb[3];
+  return '#'+r+r+g+g+b+b;
+}
+function parseHex(h){
+  if(h.length===4){ // #rgb
+    const r=parseInt(h[1]+h[1],16), g=parseInt(h[2]+h[2],16), b=parseInt(h[3]+h[3],16);
+    return {r,g,b};
+  }else{
+    const r=parseInt(h.slice(1,3),16), g=parseInt(h.slice(3,5),16), b=parseInt(h.slice(5,7),16);
+    return {r,g,b};
+  }
+}
 
-    function renderBoard(){
-      const wrap = document.getElementById('boardList');
-      const emptyEl = document.getElementById('boardEmpty');
-      wrap.innerHTML='';
-      emptyEl.classList.toggle('hidden', state.board.length>0);
-      for(const b of state.board){
-        const node = document.getElementById('boardTpl').content.firstElementChild.cloneNode(true);
-        node.querySelector('[data-btitle]').textContent = b.title;
-        node.querySelector('[data-bmeta]').textContent = `${b.name} · ${new Date(b.date).toLocaleString('ko-KR')}`;
-        node.querySelector('[data-bbody]').textContent = b.body;
-        wrap.appendChild(node);
-      }
-    }
-
-    // --- Map ---
-    let mainMap, markersLayer;
-    function initMainMap(){
-      if(mainMap){ setTimeout(()=> mainMap.invalidateSize(), 50); return; }
-      mainMap = L.map('map').setView([37.559,126.936], 14);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(mainMap);
-      markersLayer = L.layerGroup().addTo(mainMap);
-      refreshMap();
-    }
-
-    function refreshMap(){
-      if(!markersLayer) return;
-      markersLayer.clearLayers();
-      const points = state.items.filter(i=> typeof i.lat==='number' && typeof i.lng==='number');
-      points.forEach(it=>{
-        const m = L.circleMarker([it.lat,it.lng], { radius:6, weight:1, color:'#333', fillColor: it.hex||'#3388ff', fillOpacity:0.9 });
-        const pal = (it.palette && it.palette.length ? it.palette : [it.hex]).slice(0,5).map(h=>`<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${h};margin-right:2px;border:1px solid #fff"></span>`).join('');
-        m.bindPopup(`<b>${escapeHtml(it.title)}</b><br/>${escapeHtml(it.place||'')}<br/><small>${new Date(it.date).toLocaleString('ko-KR')}</small><div style="margin-top:6px">${pal}</div>`);
-        m.addTo(markersLayer);
-      });
-    }
-
-    function escapeHtml(str=''){ return str.replace(/[&<>"']/g, s=>({"&":"&amp;","<":"&lt;",
-      ">":"&gt;","\"":"&quot;","'":"&#39;"}[s])); }
-
-    // --- Persistence ---
-    function persist(){ localStorage.setItem('shinchon-colors-pack', JSON.stringify({items:state.items, board:state.board})); }
-    function restore(){
-      try { const obj = JSON.parse(localStorage.getItem('shinchon-colors-pack')||'{}'); state.items = obj.items||[]; state.board = obj.board||[]; }
-      catch(e){ state.items=[]; state.board=[]; }
-      render(); renderBoard();
-    }
-
-    function onExport(){
-      const blob = new Blob([JSON.stringify({items:state.items, board:state.board}, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='shinchon-color-atlas.json'; a.click(); URL.revokeObjectURL(url);
-    }
-
-    function onImport(e){
-      const file = e.target.files[0]; if(!file) return;
-      const reader = new FileReader(); reader.onload = ev => {
-        try { const obj = JSON.parse(ev.target.result); if(obj && (obj.items||obj.board)){ state.items = obj.items||[]; state.board = obj.board||[]; persist(); render(); renderBoard(); refreshMap(); } }
-        catch(err){ alert('JSON 형식을 확인해 주세요.'); }
-      }; reader.readAsText(file); e.target.value='';
-    }
-
-    // Init
-    restore();
-  </script>
+// Initialize
+renderBoard();
+</script>
 </body>
 </html>
