@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>신촌의 색</title>
+<title>신촌의 색 - colorfulworld sinchon.</title>
 <style>
 :root{--bg:#0b1020;--panel:#0e1428;--line:#1e293b;--muted:#90a4b8;--text:#e6edf3;--accent:#7dd3fc;}
 *{box-sizing:border-box} html,body{height:100%}
