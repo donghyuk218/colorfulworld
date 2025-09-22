@@ -2,7 +2,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>신촌의 색 - colorfulworld sinchon.</title>
+<title>신촌의 색 아카이</title>
 <style>
 :root{--bg:#0b1020;--panel:#0e1428;--line:#1e293b;--muted:#90a4b8;--text:#e6edf3;--accent:#7dd3fc;}
 *{box-sizing:border-box} html,body{height:100%}
@@ -48,7 +48,7 @@ kbd{background:#0a1428;border:1px solid var(--line);border-radius:6px;padding:2p
 <body>
 <header>
   <div class="container">
-    <h1>신촌의 색 — Color Commons</h1>
+    <h1>신촌의 색 아카이브</h1>
     <p class="subtitle">사진과 기록으로 모은 신촌의 색. 누구나 올리고, 모두 함께 보는 신촌의 색 아카이브.</p>
     <div class="tabs">
       <div class="tab active" data-tab="upload">새 기록</div>
