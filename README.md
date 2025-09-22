@@ -121,7 +121,7 @@ kbd{background:#0a1428;border:1px solid var(--line);border-radius:6px;padding:2p
 
   <!-- Atlas -->
   <section id="atlas" class="panel" style="display:none">
-    <h3>신촌의 색 아카이브(집계 시각화)</h3>
+    <h3>신촌의 색 아카이브(시각화)</h3>
     <p class="small">여러 사람이 저장한 이미지의 팔레트를 모아 색 분포를 보여줍니다. 색은 12-bit로 양자화(#RGB) 후 빈도 기반으로 배치합니다.</p>
     <div id="vizWrap">
       <canvas id="vizCanvas"></canvas>
